@@ -3,6 +3,8 @@ from google.oauth2 import service_account
 import os
 from google.oauth2 import service_account
 from dotenv import load_dotenv
+from utils import *
+
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -56,12 +58,14 @@ def crate_table_workflow_actions():
     try:
         client.get_table(table_ref)  # API call to fetch table details
         print(f"Table '{table_id}' already exists in dataset '{dataset_id}'.")
+        logger.info(f"Table '{table_id}' already exists in dataset '{dataset_id}'.")
     except Exception as e:
         if "Not found" in str(e):
             # Create the table if it doesn't exist
             table = bigquery.Table(table_ref, schema=schema)
             client.create_table(table)  # API call
             print(f"Table '{table_id}' created successfully in dataset '{dataset_id}'.")
+            logger.info(f"Table '{table_id}' created successfully in dataset '{dataset_id}'.")
         else:
             print(f"Table '{table_id}' already created in dataset '{dataset_id}'.")
 
@@ -117,12 +121,14 @@ def create_table_for_workflow_action_stats():
     try:
         client.get_table(table_ref)
         print(f"Table '{table_id}' already exists in dataset '{dataset_id}'.")
+        logger.info(f"Table '{table_id}' already exists in dataset '{dataset_id}'.")
     except Exception as e:
         if "Not found" in str(e):
             # Create the table if it doesn't exist
             table = bigquery.Table(table_ref, schema=schema)
             table = client.create_table(table)  # API call
             print(f"Table '{table_id}' created successfully in dataset '{dataset_id}'.")
+            logger.info(f"Table '{table_id}' created successfully in dataset '{dataset_id}'.")
         else:
             raise  
 

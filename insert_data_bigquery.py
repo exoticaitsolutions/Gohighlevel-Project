@@ -1,6 +1,8 @@
+from datetime import datetime
 from big_query_script import client
 import os
 from dotenv import load_dotenv
+from utils import *
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -43,6 +45,7 @@ def insert_row_in_work_flow_actions(rows_to_insert):
     if not errors:
         print("==============="*8)
         print("Data inserted successfully!")
+        logger.info("Data inserted successfully workflow_actions table!")
         print("==============="*8)
     else:
         print(f"Encountered errors while inserting data: {errors}")
@@ -108,5 +111,6 @@ def insert_data_into_workflow_actions_stats(email_stats_data, sms_stats_data):
     errors = client.insert_rows_json(table_ref, rows_to_insert)  # API call
     if not errors:
         print("Data inserted successfully!")
+        logger.info("Data inserted successfully workflow_actions_stats table!")
     else:
         print(f"Encountered errors while inserting data: {errors}")

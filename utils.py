@@ -26,9 +26,9 @@ def setup_logging():
     )
     logger = logging.getLogger()
     return logger
+logger = setup_logging()
 
 def process_email(driver):
-    logger = setup_logging()
     logger.info("Starting the scrapping process process email ")
     email_actions = driver.find_elements(By.XPATH, '//*[@aria-label="Email Action"]')
     print("email_actions length: ", len(email_actions))
@@ -111,7 +111,6 @@ def process_email(driver):
 
 
 def process_sms(driver):
-    logger = setup_logging()
     logger.info("Starting the scrapping process process sms ")
    
     sms_actions = driver.find_elements(By.XPATH, '//*[@aria-label="SMS Action"]')
@@ -185,7 +184,6 @@ def process_sms(driver):
 
 
 def scrapp_email_sms(driver, url):
-    logger = setup_logging()
     logger.info("scrapp_email_sms")
     action_type = ''
     print("url : ", url)
@@ -270,7 +268,6 @@ main_publish_list = []
 main_folder_list = []
 
 def status_check_folder_or_not(driver):
-    logger = setup_logging()
     logger.info("Check folder or not.")
   
     try:

@@ -2,10 +2,8 @@ import time
 # from get_otp import login_gmail
 from login_with_google_api import otp_get_from
 from urls import *
-from utils import status_check_folder_or_not
+from utils import *
 from webdriver_configration import driver_confrigration
-import logging
-from datetime import datetime
 from selenium.webdriver.common.by import By
 import os
 from dotenv import load_dotenv
@@ -20,28 +18,8 @@ print("GOHIGHLEVEL_EMAIL : ", GOHIGHLEVEL_EMAIL)
 print("GOHIGHLEVEL_PASSWORD : ", GOHIGHLEVEL_PASSWORD)
 
 
-
-def setup_logging():
-    # Create the logs_detail directory if it doesn't exist
-    log_dir = "logs_detail"
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-    
-    # Generate a log file name based on the current date
-    log_file = os.path.join(log_dir, f"log_{datetime.now().strftime('%Y-%m-%d')}.log")
-    
-    # Set up logging configuration
-    logging.basicConfig(
-        filename=log_file,
-        level=logging.INFO,  # Set the logging level to INFO
-        format="%(asctime)s - %(levelname)s - %(message)s",
-        filemode='a'  # Append to the existing log file
-    )
-    logger = logging.getLogger()
-    return logger
-
+logger = setup_logging()
 def scrapping():
-    logger = setup_logging()
     logger.info("Starting the scrapping process.")
     
     try:
