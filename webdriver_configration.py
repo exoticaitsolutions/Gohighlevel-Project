@@ -22,9 +22,10 @@ def driver_confrigration():
 
 # def driver_confrigration():
 #     # Set Chrome options
-#     print("333333333333333333333")
+#     print("dirver function calll ")
 #     options = webdriver.ChromeOptions()
 #     options.add_argument("--headless")
+#     options.add_argument("--start-maximized")
 #     options.add_argument("--disable-dev-shm-usage")
 #     options.add_argument("--no-sandbox")
 #     options.add_argument('--disable-gpu')
@@ -33,6 +34,5 @@ def driver_confrigration():
 #     driver = webdriver.Chrome(service=service, options=options)
 #     driver.set_page_load_timeout(180)  # Set a longer timeout for page load
 #     driver.set_script_timeout(180)  # Set a
-    
+#     print("dirver run successfully")
 #     return driver
-

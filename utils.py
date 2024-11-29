@@ -37,18 +37,25 @@ def setup_logging():
 logger = setup_logging()
 
 def process_email(driver):
-    logger.info("Starting the scrapping process process email ")
+    email_stats_data = {}
+    logger.info("Starting the scrapping process for email")
     try:
-        email_actions = driver.find_elements(By.XPATH, '//*[@aria-label="Email Action"]')
-        print("email_actions length: ", len(email_actions))
-        logger.info("email_actions length: ", len(email_actions))
+        email_actions = driver.find_elements(By.XPATH, '//*[@aria-label="Email Notification to dedicated OS Action"]')
+        
+        # Check if no 'Email Notification to dedicated OS Action' found
+        if not email_actions:
+            logger.warning("No 'Email Notification to dedicated OS Action' found. Searching for 'Email Action'.")
+            email_actions = driver.find_elements(By.XPATH, '//*[@aria-label="Email Action"]')
+        
+        logger.info(f"Found {len(email_actions)} email actions.")
 
         for i in range(len(email_actions)):
-            print("Processing email", i + 1, "of", len(email_actions))
             logger.info(f"Processing email {i + 1} of {len(email_actions)}")
 
             # Refresh the list of email actions
             email_actions = driver.find_elements(By.XPATH, '//*[@aria-label="Email Action"]')
+            if not email_actions:
+                email_actions = driver.find_elements(By.XPATH, '//*[@aria-label="Email Notification to dedicated OS Action"]')
             email = email_actions[i]  # Get the current email action
             email.click()
             time.sleep(8)
@@ -63,59 +70,53 @@ def process_email(driver):
             time.sleep(5)
 
             email_stats_data = {
-                # "workflow_action_id": i + 1,  # Or dynamically fetch ID
                 "last_updated_date": "2024-11-25T12:00:00Z",  # Example timestamp
-
                 "stats_email_count_total": driver.find_element(By.ID, "cmp-stat-modal__btn--stat-card-total").text,
-
                 "stats_email_percent_delivered": driver.find_element(By.ID, "cmp-stat-modal__btn--stat-card-delivered").text,
                 "stats_email_count_delivered": driver.find_element(By.XPATH, '//*[@id="main"]/section/div/div/div[1]/div[2]/div/fieldset/div/div[2]/div[3]/div/div/div[2]/div/div[3]/label').text,
-            
                 "stats_email_percent_clicked": driver.find_element(By.ID, "cmp-stat-modal__btn--stat-card-clicked").text,
                 "stats_email_count_clicked": driver.find_element(By.XPATH, '//*[@id="main"]/section/div/div/div[1]/div[2]/div/fieldset/div/div[2]/div[3]/div/div/div[2]/div/div[3]/label').text,
-
                 "stats_email_percent_opened": driver.find_element(By.ID, "cmp-stat-modal__btn--stat-card-opened").text,
                 "stats_email_count_opened": driver.find_element(By.XPATH, '//*[@id="main"]/section/div/div/div[1]/div[2]/div/fieldset/div/div[2]/div[3]/div/div/div[2]/div/div[3]/label').text,
-
                 "stats_email_percent_replied": driver.find_element(By.ID, "cmp-stat-modal__btn--stat-card-replied").text,
                 "stats_email_count_replied": driver.find_element(By.XPATH, '//*[@id="main"]/section/div/div/div[1]/div[2]/div/fieldset/div/div[2]/div[3]/div/div/div[2]/div/div[3]/label').text,
-
                 "stats_email_percent_bounced": driver.find_element(By.ID, "cmp-stat-modal__btn--stat-card-permanent_fail").text,
                 "stats_email_count_bounced": driver.find_element(By.XPATH, '//*[@id="main"]/section/div/div/div[1]/div[2]/div/fieldset/div/div[2]/div[3]/div/div/div[2]/div/div[3]/label').text,
-
                 "stats_email_percent_unsubscribed": driver.find_element(By.ID, "cmp-stat-modal__btn--stat-card-unsubscribed").text,
                 "stats_email_count_unsubscribed": driver.find_element(By.XPATH, '//*[@id="main"]/section/div/div/div[1]/div[2]/div/fieldset/div/div[2]/div[3]/div/div/div[2]/div/div[3]/label').text,
-
-                "stats_email_percent_rejected":"",
-                "stats_email_count_rejected":"",
-
-                "stats_email_percent_complained":"",
-                "stats_email_count_complained":"",
+                "stats_email_percent_rejected": "",
+                "stats_email_count_rejected": "",
+                "stats_email_percent_complained": "",
+                "stats_email_count_complained": "",
             }
-            print("email_stats_data : ", email_stats_data)
-            logger.info(f"email_stats_data : {email_stats_data}")
+            
+            logger.info(f"email_stats_data: {email_stats_data}")
+            print(f"email_stats_data: {email_stats_data}")
 
             # Apply cleaning to specific fields
             fields_to_clean = [key for key in email_stats_data if 'count' in key or 'percent' in key]
-
             for field in fields_to_clean:
                 email_stats_data[field] = clean_and_convert(email_stats_data[field])
 
-            print("email_stats_data cleaned : ", email_stats_data)
-            logger.info(f"email_stats_data cleaned : {email_stats_data}")
+            logger.info(f"Cleaned email_stats_data: {email_stats_data}")
+            print(f"Cleaned email_stats_data: {email_stats_data}")
 
             # Close the details view
             driver.find_element(By.XPATH, '//*[@id="main"]/section/div/div/div[1]/div[2]/div/fieldset/div/div[2]/div[3]/div/div/div[2]/div/div[1]/span').click()
             driver.find_element(By.XPATH, '//*[@id="cancel-button-aside-section"]/span').click()
             time.sleep(5)
-        logger.info("Completed email scrapping process.")
+
+        logger.info("Completed email scraping process.")
     except Exception as e:
-        logger.error(f"An error occurred during SMS processing: {str(e)}")
+        logger.error(f"An error occurred during email processing: {str(e)}")
         print(f"An error occurred during email processing: {str(e)}")
+
     return email_stats_data
 
 
+
 def process_sms(driver):
+    sms_stats_data = {}
     logger.info("Starting the scrapping process process sms ")
     try:
         sms_actions = driver.find_elements(By.XPATH, '//*[@aria-label="SMS Action"]')
@@ -277,6 +278,7 @@ def click_on_folder_or_file(driver,row):
 
 main_publish_list = []
 main_folder_list = []
+
 
 def status_check_folder_or_not(driver):
     logger.info("Check folder or not.")
