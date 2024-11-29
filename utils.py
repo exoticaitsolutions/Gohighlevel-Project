@@ -306,10 +306,10 @@ def status_check_folder_or_not(driver):
             print("updated_date : ", updated_date.text)
 
             if name_cell.text == 'Published':
-                print("Entered Condition if  Published")
-                logger.info(f"publish row updated_date: {updated_date.text}")
-                logger.info(f"name of publish row: {name_cell.text}")
-                print("name of publish row : ", name_cell.text)
+                print("Entered Condition if status Published")
+                logger.info(f"publish status updated_date: {updated_date.text}")
+                logger.info(f"name of status: {name_cell.text}")
+                print("name of status : ", name_cell.text)
 
                 click_url  =  click_on_folder_or_file(driver,rows[i])
 
@@ -340,17 +340,16 @@ def status_check_folder_or_not(driver):
 
             elif name_cell.text == "Draft":
                 print("Entered Condition elif  Draft")
-                logger.info("Entered Condition elif  Draft")
-                logger.info(f"name of publish Draft : {name_cell.text}")
+                logger.info("Entered Condition elif status is Draft")
+                logger.info(f"name of status : {name_cell.text}")
 
             else:
-                print("Entered Condition else not Draft not publish its folder")
-                logger.info("Entered Condition else not Draft not publish its folder")
-                logger.info(f"name of Folder : {name_cell.text}")
+                print("Entered Condition else status is not Draft not publish its folder")
+                logger.info("Entered Condition else not status is not Draft not publish its folder")
                 click_url =  click_on_folder_or_file(driver,rows[i])
                 main_folder_list.append(click_url)
                 driver.get(current_url)
-                time.sleep(35)
+                time.sleep(40)
                 driver.switch_to.frame("workflow-builder")
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")  # Log the error message
