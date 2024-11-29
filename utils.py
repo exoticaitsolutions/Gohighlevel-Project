@@ -168,9 +168,6 @@ def process_sms(driver):
 
             print("Sms Stats data cleaned :", sms_stats_data)
             logger.info(f"Sms Stats data cleaned :{sms_stats_data}")
-            
-            # insert_data_into_workflow_actions_stats(sms_stats_data)
-
             print()
             print()
         
@@ -280,102 +277,105 @@ main_publish_list = []
 main_folder_list = []
 
 def status_check_folder_or_not(driver):
-    logger.info("Check folder or not.")
-  
+    logger.info("Checking folder or file status.")
+    global main_folder_list  # Ensure this is defined globally in your script
+    global main_publish_list  # Same for main_publish_list
+    
     try:
+        # Check if the table exists
         tbody = driver.find_element(By.CLASS_NAME, 'n-data-table-tbody')
         if tbody:
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight * 0.6);")
-            time.sleep(7)  # Allow time for the page to load
+            time.sleep(7)
+            
+            # Click dropdown to select rows per page
             icon_arrow = WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable((By.XPATH, '//i[contains(@class, "n-base-icon n-base-suffix__arrow")]'))
-                )
-                # Click the icon
+                EC.element_to_be_clickable((By.XPATH, '//i[contains(@class, "n-base-icon n-base-suffix__arrow")]'))
+            )
             icon_arrow.click()
             time.sleep(5)
+            
             option = WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable(
-                        (By.XPATH, '//div[contains(@class, "n-base-select-option__content") and text()="50 / page"]')
-                    )
+                EC.element_to_be_clickable(
+                    (By.XPATH, '//div[contains(@class, "n-base-select-option__content") and text()="50 / page"]')
                 )
-                # Click the option
+            )
             option.click()
             time.sleep(5)
+        
+        # Process rows in the table
         rows = tbody.find_elements(By.CLASS_NAME, 'n-data-table-tr')
         logger.info(f"Number of Rows Found: {len(rows)}")
         print("Number of Rows Found : ", len(rows))
         
-    
-        for i in  range(0,len(rows)):
-            
-            current_url = driver.current_url                                
-            # Get the name cell value
+        for i in range(len(rows)):
+            current_url = driver.current_url
             tbody = driver.find_element(By.CLASS_NAME, 'n-data-table-tbody')
-        
             rows = tbody.find_elements(By.CLASS_NAME, 'n-data-table-tr')
+            
             name_cell = rows[i].find_element(By.XPATH, './td[2]')
             updated_date = rows[i].find_element(By.XPATH, './td[5]')
             
             if name_cell.text == 'Published':
-                print("Entered Condition Published")
-                logger.info("Entered Condition Published")
-                logger.info(f"name of status: {name_cell.text}")
-                print("name of status : ", name_cell.text)
-
-                click_url  =  click_on_folder_or_file(driver,rows[i])
-
+                print("Processing Published status")
+                logger.info("Processing Published status")
+                click_url = click_on_folder_or_file(driver, rows[i])
                 main_publish_list.append(click_url)
-                print("main_publish_list : ", main_publish_list)
-
-                action_type = scrapp_email_sms(driver, click_url)
-
-                rows_to_insert = [
-                    {
-                        "workflow_id": 0,  # Placeholder value that will be replaced with the incremented ID
-                        "name": name_cell.text,
-                        "step": 1,
-                        "type": action_type,
-                        "last_updated_date": updated_date.text or "2024-11-26",  # Default date if empty
-                    },
-                ]
-                print("rows_to_insert : ", rows_to_insert)
-                logger.info(f"rows_to_insert: {rows_to_insert}")
-
-                insert_data_in_work_flow_actions(rows_to_insert)
-
-
-                print("insert_data_in_work_flow_actions")
+                print("Main Publish List:", main_publish_list)
+                try:
+                    action_type = scrapp_email_sms(driver, click_url)
+                except Exception as e:
+                    print(f"Error while scrapp_email_sms function call : {e}")
+                try:
+                    rows_to_insert = [
+                        {
+                            "workflow_id": 0,  # Placeholder
+                            "name": name_cell.text,
+                            "step": 1,
+                            "type": action_type,
+                            "last_updated_date": updated_date.text or "2024-11-26",
+                        },
+                    ]
+                    insert_data_in_work_flow_actions(rows_to_insert)
+                except Exception as e:
+                    print(f"Error while insert_data_in_work_flow_actions function call : {e}")
                 driver.get(current_url)
                 time.sleep(35)
                 driver.switch_to.frame("workflow-builder")
 
             elif name_cell.text == "Draft":
-                print("Entered Condition Draft")
-                logger.info("Entered Condition Draft")
-                logger.info(f"name of status : {name_cell.text}")
-
+                print("Processing Draft status")
+                logger.info("Processing Draft status")
+            
             else:
-                print("Entered Condition folder")
-                logger.info("Entered Condition folder")
-                click_url =  click_on_folder_or_file(driver,rows[i])
+                print("Processing Folder")
+                logger.info("Processing Folder")
+                click_url = click_on_folder_or_file(driver, rows[i])
                 main_folder_list.append(click_url)
                 driver.get(current_url)
                 time.sleep(40)
                 driver.switch_to.frame("workflow-builder")
+
     except Exception as e:
-        print("Table not found on the page.")
-        logger.error("Table not found on the page.")   # Log the error message
+        logger.error(f"Table not Found")
+        print("Table not Found")
+
     print("main_publish_list",main_publish_list)
     
     if len(main_folder_list) >=1:
-
-        new_url = main_folder_list[0]
-        driver.get(new_url)
-        time.sleep(35)
-        driver.switch_to.frame("workflow-builder")
-        main_folder_list.pop(0)
-        status_check_folder_or_not(driver)
+        next_url = main_folder_list[0]
+        try:
+            driver.get(next_url)
+            time.sleep(35)
+            driver.switch_to.frame("workflow-builder")
+            main_folder_list.pop(0)
+            status_check_folder_or_not(driver)
+        except Exception as e:
+            logger.error(f"Error navigating to folder: {e}")
+            print("Error navigating to folder:", str(e))
     
-    print()
-    print("main_publish_list",main_publish_list)
+    print("Final Main Publish List:", main_publish_list)
+    logger.info(f"Final Main Publish List: {main_publish_list}")
     return main_publish_list
+
+    
