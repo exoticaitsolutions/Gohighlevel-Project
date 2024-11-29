@@ -41,10 +41,9 @@ def process_email(driver):
     try:
         email_actions = driver.find_elements(By.XPATH, '//*[@aria-label="Email Action"]')
         print("email_actions length: ", len(email_actions))
+        logger.info("email_actions length: ", len(email_actions))
 
         for i in range(len(email_actions)):
-            print("------------------email---------------------------------------------------------------------")
-            print("=" * 18)
             print("Processing email", i + 1, "of", len(email_actions))
             logger.info(f"Processing email {i + 1} of {len(email_actions)}")
 
@@ -109,10 +108,10 @@ def process_email(driver):
             driver.find_element(By.XPATH, '//*[@id="main"]/section/div/div/div[1]/div[2]/div/fieldset/div/div[2]/div[3]/div/div/div[2]/div/div[1]/span').click()
             driver.find_element(By.XPATH, '//*[@id="cancel-button-aside-section"]/span').click()
             time.sleep(5)
+        logger.info("Completed email scrapping process.")
     except Exception as e:
         logger.error(f"An error occurred during SMS processing: {str(e)}")
         print(f"An error occurred during email processing: {str(e)}")
-    logger.info("Completed email scrapping process.")
     return email_stats_data
 
 
@@ -125,7 +124,6 @@ def process_sms(driver):
 
 
         for i in range(len(sms_actions)):
-            print("------------------sms---------------------------------------------------------------------")
             print("=" * 18)
             print("Processing sms", i + 1, "of", len(sms_actions))
             logger.info(f"Processing sms {i + 1} of {len(sms_actions)}")
@@ -179,12 +177,11 @@ def process_sms(driver):
             driver.find_element(By.XPATH, '//*[@id="main"]/section/div/div/div[1]/div[2]/div/fieldset/form/div[2]/div[2]/div/div/div[2]/div/div[1]/span').click()
             driver.find_element(By.XPATH, '//*[@id="cancel-button-aside-section"]/span').click()
             time.sleep(7)
+        logger.info("Completed SMS scrapping process.")
     except Exception as e:
         logger.error(f"An error occurred during SMS processing: {str(e)}")
         print(f"An error occurred during SMS processing: {str(e)}")
-    logger.info("Completed SMS scrapping process.")
     return sms_stats_data
-
 
 def scrapp_email_sms(driver, url):
     logger.info("Starting scrapp_email_sms.")
@@ -262,15 +259,15 @@ def scrapp_email_sms(driver, url):
             logger.info("Inserting processed data into workflow actions stats.")
             print("Inserting processed data into workflow actions stats.")
             insert_data_into_workflow_actions_stats(email_stats_data, sms_stats_data)
+            logger.info("scrapp_email_sms completed.")
         else:
             logger.info("No data to insert.")
             print("No data to insert.")
-
+        
     except Exception as e:
         logger.error(f"An error occurred in scrapp_email_sms: {str(e)}")
         print(f"An error occurred: {str(e)}")
 
-    logger.info("scrapp_email_sms completed.")
     return action_type
 
 
