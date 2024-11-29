@@ -191,12 +191,6 @@ def scrapp_email_sms(driver, url):
         driver.get(url)
         time.sleep(50)
 
-        # Refresh the current URL
-        current_url = driver.current_url
-        print(f"Refreshed current URL: {current_url}")
-        driver.get(current_url)
-        time.sleep(35)
-
         # Switch to the correct iframe
         logger.info("Switching to iframe 'workflow-builder'.")
         driver.switch_to.frame('workflow-builder')
