@@ -10,11 +10,11 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 def clean_and_convert(value):
-                if isinstance(value, str):
-                    # Extract digits using regex
-                    match = re.search(r'\d+', value)
-                    return int(match.group()) if match else 0
-                return value
+    if isinstance(value, str):
+        # Extract digits using regex
+        match = re.search(r'\d+', value)
+        return int(match.group()) if match else 0
+    return value
 
 def setup_logging():
     # Create the logs_detail directory if it doesn't exist
@@ -278,7 +278,6 @@ def click_on_folder_or_file(driver,row):
 
 main_publish_list = []
 main_folder_list = []
-
 
 def status_check_folder_or_not(driver):
     logger.info("Check folder or not.")
