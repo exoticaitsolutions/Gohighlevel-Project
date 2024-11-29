@@ -2,13 +2,32 @@ from datetime import datetime
 from big_query_script import client
 import os
 from dotenv import load_dotenv
-from utils import *
+import logging
 
 # Load environment variables from the .env file
 load_dotenv()
 
 project_id = os.getenv('bigquery_project_id')
 dataset_id = os.getenv('bigquery_dataset_id')
+
+def setup_logging():
+    # Create the logs_detail directory if it doesn't exist
+    log_dir = "logs_detail"
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    
+    # Generate a log file name based on the current date
+    log_file = os.path.join(log_dir, f"log_{datetime.now().strftime('%Y-%m-%d')}.log")
+    
+    # Set up logging configuration
+    logging.basicConfig(
+        filename=log_file,
+        level=logging.INFO,  # Set the logging level to INFO
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        filemode='a'  # Append to the existing log file
+    )
+    logger = logging.getLogger()
+    return logger
 
 logger = setup_logging()
 
