@@ -15,9 +15,6 @@ project_id = os.getenv('bigquery_project_id')
 dataset_id = os.getenv('bigquery_dataset_id')
 
 
-# Create the credentials object
-credentials = service_account.Credentials.from_service_account_file(google_credentials)
-
 # Load credentials from the service account file
 credentials = service_account.Credentials.from_service_account_file(google_credentials)
 
