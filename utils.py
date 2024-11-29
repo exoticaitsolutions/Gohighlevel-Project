@@ -205,7 +205,6 @@ def scrapp_email_sms(driver, url):
     for _ in range(13):
         zoom_out_button.click()
         time.sleep(1)
-    print("ho gya zoom")
     all_data = driver.find_element(By.XPATH, '//*[@id="main"]/div[1]/div/div[4]/div[1]/div[2]')
     all_data.click()
     time.sleep(4)
