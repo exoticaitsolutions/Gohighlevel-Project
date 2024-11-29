@@ -48,7 +48,7 @@ def scrapping():
         send_security_code.click()
         logger.info("Sent security code.")
         
-        time.sleep(45)
+        time.sleep(50)
         logger.info("Waiting for OTP.")
         
         # Uncomment and integrate OTP processing as needed
@@ -58,14 +58,14 @@ def scrapping():
         otp_inputs = driver.find_elements(By.CLASS_NAME, 'otp-input')
         for i, digit in enumerate(otp_digits):
             otp_inputs[i].send_keys(digit)
-        time.sleep(40)
+        time.sleep(60)
         
         logger.info("Login successful.")
         
         automation_button = driver.find_element(By.ID, "sb_automation")
         automation_button.click()
         logger.info("Navigated to automation.")
-        time.sleep(45)
+        time.sleep(60)
         
         try:
             driver.switch_to.frame("workflow-builder")

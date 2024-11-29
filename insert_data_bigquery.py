@@ -23,55 +23,61 @@ def get_last_workflow_id():
     return last_id
 
 
-def insert_row_in_work_flow_actions(rows_to_insert):
+def insert_data_in_work_flow_actions(rows_to_insert):
     table_id = "workflow_actions"
     table_ref = f"{project_id}.{dataset_id}.{table_id}"
-    
-    # Get the last workflow_id and increment it by 1
-    last_workflow_id = get_last_workflow_id()
-    new_workflow_id = 1 if last_workflow_id == 0 else last_workflow_id + 1  # Start from 1 if no data
-    
-    # Update the rows with the new workflow_id
-    for row in rows_to_insert:
-        row["workflow_id"] = new_workflow_id  # Assign the incremented ID
-        
-        # Handle empty last_updated_date
-        if not row["last_updated_date"]:  # Check if last_updated_date is empty or None
-            row["last_updated_date"] = "DEFAULT_VALUE"  # You can replace with a default value like '2024-11-26'
 
-    # Insert rows into the table
-  
-    errors = client.insert_rows_json(table_ref, rows_to_insert)  # API call
-    if not errors:
-        print("==============="*8)
-        print("Data inserted successfully!")
-        logger.info("Data inserted successfully workflow_actions table!")
-        print("==============="*8)
-    else:
-        print(f"Encountered errors while inserting data: {errors}")
+    try:
+        # Get the last workflow_id and increment it by 1
+        last_workflow_id = get_last_workflow_id()
+        new_workflow_id = 1 if last_workflow_id == 0 else last_workflow_id + 1  # Start from 1 if no data
+
+        # Update the rows with the new workflow_id
+        for row in rows_to_insert:
+            row["workflow_id"] = new_workflow_id  # Assign the incremented ID
+            
+            # Handle empty last_updated_date
+            if not row.get("last_updated_date"):  # Check if last_updated_date is empty or None
+                row["last_updated_date"] = "DEFAULT_VALUE"  # Replace with a default value like '2024-11-26'
+
+        # Insert rows into the table
+        errors = client.insert_rows_json(table_ref, rows_to_insert)  # API call
+        
+        if not errors:
+            print("=" * 64)
+            print("Data inserted successfully!")
+            logger.info("Data inserted successfully into workflow_actions table!")
+            print("=" * 64)
+        else:
+            raise Exception(f"Encountered errors while inserting data: {errors}")
+    
+    except Exception as e:
+        print("Error occurred during data insertion:")
+        print(e)
+        logger.error(f"Error occurred during data insertion into workflow_actions table: {e}")
 
 
 def insert_data_into_workflow_actions_stats(email_stats_data, sms_stats_data):
     table_id = "workflow_actions_stats"
-    # Define the table 
-    print("enetr function insert_data_into_workflow_actions_stats ")
-    table_ref = f"{project_id}.{dataset_id}.workflow_actions_stats"
+    print("Entering function insert_data_into_workflow_actions_stats")
+    table_ref = f"{project_id}.{dataset_id}.{table_id}"
 
-    # Fetch the current maximum workflow_action_id
-    query = f"""
-        SELECT MAX(workflow_action_id) AS max_id
-        FROM `{table_ref}`
-    """
-    query_job = client.query(query)  # Execute the query
-    max_id = None
-    for row in query_job:
-        max_id = row["max_id"]
+    try:
+        # Fetch the current maximum workflow_action_id
+        query = f"""
+            SELECT MAX(workflow_action_id) AS max_id
+            FROM `{table_ref}`
+        """
+        query_job = client.query(query)  # Execute the query
+        max_id = None
+        for row in query_job:
+            max_id = row["max_id"]
 
-    # Determine the next workflow_action_id
-    next_id = (max_id + 1) if max_id is not None else 1  # Start from 1 if no records exist
+        # Determine the next workflow_action_id
+        next_id = (max_id + 1) if max_id is not None else 1  # Start from 1 if no records exist
 
-    # Prepare the data to insert based on the table schema
-    rows_to_insert = [
+        # Prepare the data to insert based on the table schema
+        rows_to_insert = [
         {
             "workflow_action_id": next_id,  # Use the incremented ID
             "last_updated_date": email_stats_data.get("last_updated_date", "2024-11-25T12:00:00Z"),
@@ -106,11 +112,15 @@ def insert_data_into_workflow_actions_stats(email_stats_data, sms_stats_data):
             "stats_email_percent_complained": email_stats_data.get("stats_email_percent_complained", "0%"),
         }
     ]
+        # Insert rows into the table
+        errors = client.insert_rows_json(table_ref, rows_to_insert)  # API call
+        if not errors:
+            print("Data inserted successfully!")
+            logger.info("Data inserted successfully into workflow_actions_stats table!")
+        else:
+            raise Exception(f"Encountered errors while inserting data: {errors}")
 
-    # Insert rows into the table
-    errors = client.insert_rows_json(table_ref, rows_to_insert)  # API call
-    if not errors:
-        print("Data inserted successfully!")
-        logger.info("Data inserted successfully workflow_actions_stats table!")
-    else:
-        print(f"Encountered errors while inserting data: {errors}")
+    except Exception as e:
+        print("Error occurred during data insertion:")
+        print(e)
+        logger.error(f"Error occurred during data insertion into workflow_actions_stats table: {e}")

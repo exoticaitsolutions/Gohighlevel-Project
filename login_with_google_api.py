@@ -6,6 +6,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from requests import Request
 from google.auth.transport.requests import Request
+from utils import *
 
 print()
 # If modifying the API, set SCOPES
@@ -14,7 +15,6 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 def authenticate_gmail_api():
     """Authenticate and return the Gmail API service."""
     creds = None
-    print("--------------------------------------------------")
 
     # The file token.json stores the user's access and refresh tokens.
     # It is created automatically when the authorization flow completes for the first time.
@@ -44,6 +44,7 @@ def get_last_email_from_sender(service, sender_email):
 
         if not messages:
             print(f'No messages found from {sender_email}.')
+            logger.info(f'No messages found from {sender_email}.')
             return None
         
         # Get the most recent message
@@ -54,10 +55,12 @@ def get_last_email_from_sender(service, sender_email):
         snippet = message['snippet']
         print(f'Last email from {sender_email}:')
         print("message : ",snippet)
+        logger.info(f'fethched message: {snippet}')
         return snippet
 
     except HttpError as error:
         print(f'An error occurred: {error}')
+        logger.info(f'An error occurred: {error}')
         return None
     
 
@@ -72,18 +75,18 @@ def extract_otp(snippet):
 
 def otp_get_from():
     service = authenticate_gmail_api()
-    print(service,"wwwwwwwwwwwwwww")
+    print("service : ", service)
     sender_email = 'noreply@donotreply.acct-mgmt.com'
     last_email = get_last_email_from_sender(service, sender_email)
     otp =  extract_otp(last_email)
     if last_email:
+        logger.info('Otp fetch sucessfully')
+        print('Otp fetch sucessfully')
         return otp
     else:
+        logger.info('Otp not fetch sucessfully')
+        logger.info('Otp not fetch sucessfully')
         return 000000
-        # print('Email Snippet:', otp)
 
-    
 
-# if __name__ == '__main__':
-#     otp = otp_get_from()
-#     print(otp)
+ 

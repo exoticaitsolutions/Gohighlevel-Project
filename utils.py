@@ -3,7 +3,7 @@ import re
 import time
 from datetime import datetime
 import logging
-from insert_data_bigquery import insert_data_into_workflow_actions_stats, insert_row_in_work_flow_actions
+from insert_data_bigquery import insert_data_into_workflow_actions_stats, insert_data_in_work_flow_actions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -202,7 +202,6 @@ def scrapp_email_sms(driver, url):
     
     # Click on the all data section
     zoom_out_button = driver.find_element(By.ID, "workflow-zoom-out")
-    print("zoom_out_button ----------------------------------------")
     for _ in range(13):
         zoom_out_button.click()
         time.sleep(1)
@@ -252,7 +251,6 @@ def scrapp_email_sms(driver, url):
 
     logger.info("scrapp_email_sms completed.")
     return action_type
-
 
 
 def click_on_folder_or_file(driver,row):
@@ -332,10 +330,10 @@ def status_check_folder_or_not(driver):
                 print("rows_to_insert : ", rows_to_insert)
                 logger.info(f"rows_to_insert: {rows_to_insert}")
 
-                insert_row_in_work_flow_actions(rows_to_insert)
+                insert_data_in_work_flow_actions(rows_to_insert)
 
 
-                print("insert_row_in_work_flow_actions : -------------------"*88)
+                print("insert_data_in_work_flow_actions : -------------------"*88)
                 driver.get(current_url)
                 time.sleep(35)
                 driver.switch_to.frame("workflow-builder")

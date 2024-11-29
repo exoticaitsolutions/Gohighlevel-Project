@@ -12,10 +12,7 @@ load_dotenv()
 # Access the google_credentials path from the .env file
 google_credentials = os.getenv('google_credentials')
 project_id = os.getenv('bigquery_project_id')
-print("project_id  : ", project_id)
 dataset_id = os.getenv('bigquery_dataset_id')
-print("dataset_id  : ", dataset_id)
-print("google_credentials  : ", google_credentials)
 
 
 # Create the credentials object
@@ -37,8 +34,6 @@ def show_all_table_in_database():
     tables = client.list_tables(dataset_ref)  # API call
     for table in tables:
         print(table.table_id)
-
-
 
 # Define the table schema
 
@@ -192,24 +187,3 @@ def  show_data_for_actions_table():
         print(dict(row))  # Convert Row object to a dictionary for better readability
 
 # show_data_for_actions_table()
-
-
-
-# def truncate_table(table_id):
-#     table_ref = f"{project_id}.{dataset_id}.{table_id}"
-    
-#     # Truncate table query
-#     query = f"""
-#     TRUNCATE TABLE `{table_ref}`
-#     """
-    
-#     # Run the query
-#     query_job = client.query(query)  # API call to execute the query
-#     query_job.result()  # Wait for the query to finish
-#     print(f"Table '{table_id}' has been truncated.")
-
-# # Truncate 'workflow_actions_stats'
-# truncate_table("workflow_actions_stats")
-
-# # Truncate 'workflow_actions'
-# truncate_table("workflow_actions")
