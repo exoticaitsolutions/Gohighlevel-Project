@@ -189,7 +189,7 @@ def scrapp_email_sms(driver, url):
     try:
         logger.info(f"Navigating to URL: {url}")
         driver.get(url)
-        time.sleep(50)
+        time.sleep(85)
 
         # Switch to the correct iframe
         logger.info("Switching to iframe 'workflow-builder'.")
