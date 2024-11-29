@@ -10,6 +10,7 @@ load_dotenv()
 project_id = os.getenv('bigquery_project_id')
 dataset_id = os.getenv('bigquery_dataset_id')
 
+logger = setup_logging()
 
 def get_last_workflow_id():
     table_id = "workflow_actions"

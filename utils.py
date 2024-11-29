@@ -314,14 +314,10 @@ def status_check_folder_or_not(driver):
             rows = tbody.find_elements(By.CLASS_NAME, 'n-data-table-tr')
             name_cell = rows[i].find_element(By.XPATH, './td[2]')
             updated_date = rows[i].find_element(By.XPATH, './td[5]')
-            logger.info(f"updated_date: {updated_date.text}")
             
-            print("updated_date : ", updated_date.text)
-
             if name_cell.text == 'Published':
                 print("Entered Condition Published")
                 logger.info("Entered Condition Published")
-                logger.info(f"publish status updated_date: {updated_date.text}")
                 logger.info(f"name of status: {name_cell.text}")
                 print("name of status : ", name_cell.text)
 
