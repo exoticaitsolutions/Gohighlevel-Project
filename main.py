@@ -14,8 +14,6 @@ load_dotenv()
 # Access the google_credentials path from the .env file
 GOHIGHLEVEL_EMAIL = os.getenv('GOHIGHLEVEL_EMAIL')
 GOHIGHLEVEL_PASSWORD = os.getenv('GOHIGHLEVEL_PASSWORD')
-print("GOHIGHLEVEL_EMAIL : ", GOHIGHLEVEL_EMAIL)
-print("GOHIGHLEVEL_PASSWORD : ", GOHIGHLEVEL_PASSWORD)
 
 
 logger = setup_logging()
