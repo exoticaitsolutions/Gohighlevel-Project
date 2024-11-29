@@ -305,7 +305,8 @@ def status_check_folder_or_not(driver):
             print("updated_date : ", updated_date.text)
 
             if name_cell.text == 'Published':
-                print("Entered Condition if status Published")
+                print("Entered Condition Published")
+                logger.info("Entered Condition Published")
                 logger.info(f"publish status updated_date: {updated_date.text}")
                 logger.info(f"name of status: {name_cell.text}")
                 print("name of status : ", name_cell.text)
@@ -338,13 +339,13 @@ def status_check_folder_or_not(driver):
                 driver.switch_to.frame("workflow-builder")
 
             elif name_cell.text == "Draft":
-                print("Entered Condition elif  Draft")
-                logger.info("Entered Condition elif status is Draft")
+                print("Entered Condition Draft")
+                logger.info("Entered Condition Draft")
                 logger.info(f"name of status : {name_cell.text}")
 
             else:
-                print("Entered Condition else status is not Draft not publish its folder")
-                logger.info("Entered Condition else not status is not Draft not publish its folder")
+                print("Entered Condition folder")
+                logger.info("Entered Condition folder")
                 click_url =  click_on_folder_or_file(driver,rows[i])
                 main_folder_list.append(click_url)
                 driver.get(current_url)
